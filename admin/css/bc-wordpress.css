@@ -1,0 +1,3 @@
+.dashicons-beziercode {background:url(../img/bezier-20-wp.svg) 50% 50% no-repeat; }
+a:hover>.dashicons-beziercode {background:url(../img/bezier-20-wp-hover.svg) 50% 50% no-repeat; }
+a.current>.dashicons-beziercode {background:url(../img/bezier-20-wp-active.svg) 50% 50% no-repeat; }
