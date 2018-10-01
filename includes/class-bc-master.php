@@ -117,6 +117,12 @@ class BC_Master
         require_once BC_PLUGIN_DIR_PATH . 'includes/class-bc-build-menupage.php';
 
         /**
+		 * La clase responsable de procesar los datos de los items
+         * y convertiros en estructura JSON
+		 */
+        require_once BC_PLUGIN_DIR_PATH . 'includes/class-bc-crud-json.php';
+
+        /**
 		 * La clase responsable de definir todas las acciones en el
          * área de administración
 		 */
@@ -179,6 +185,8 @@ class BC_Master
         $this->cargador->add_action( 'admin_enqueue_scripts', $this->bc_admin, 'enqueue_scripts' );
         $this->cargador->add_action( 'wp_ajax_bc_crud_table', $this->bc_admin, 'ajax_crud_table' );
         $this->cargador->add_action( 'wp_ajax_nopriv_bc_crud_table', $this->bc_admin, 'ajax_crud_table' );
+        $this->cargador->add_action( 'wp_ajax_bc_crud_json', $this->bc_admin, 'ajax_crud_json' );
+        $this->cargador->add_action( 'wp_ajax_nopriv_bc_crud_json', $this->bc_admin, 'ajax_crud_json' );
     }
     
     /**

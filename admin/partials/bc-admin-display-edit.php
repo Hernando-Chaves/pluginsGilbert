@@ -1,7 +1,7 @@
 <?php 
-	$id     = $_GET['id'];
-	$sql    = "SELECT id,nombre FROM " . BC_TABLE;
-	$result = $this->db->get_results( $sql );
+	$id        = $_GET['id'];
+	$sql       = $this->db->prepare("SELECT data FROM " . BC_TABLE . " WHERE id =  %d ", $id );
+	$resultado = $this->db->get_var( $sql );
 
 ?>
 <div class="had-container">
@@ -30,33 +30,16 @@
 			<table class="striped table-responsive bordered">
 				<thead>
 					<tr>
+						<th></th>
 						<th>Nombre</th>
-						<th>Shortcode</th>
-						<th>Acciones</th>
+						<th>Apelidos</th>
+						<th>Correo</th>
+						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
-					<?php 
-						foreach($result as $k => $v)
-						{ 
-							$id     = $v->id;
-							$nombre = $v->nombre;
-						?>
-						<tr bc-table-id="<?php echo $id ?>">
-							<td><?php echo $nombre ?></td>
-							<td>[Shortcode id=<?php echo $id ?>]</td>
-							<td>
-								<button data-bc-edit-id="<?php echo $id ?>" class="btn-floating waves-ligh btn">
-									<i class="material-icons">edit</i>
-								</button>
-								<button data-bc-remove-id="<?php echo $id ?>" class="btn-floating waves-ligh btn red">
-									<i class="material-icons">delete</i>
-								</button>
-							</td>
-						</tr>	
-
-					<?php } ?>
-					
+					<?php echo $this->crud_json->readItems($resultado); ?>
 				</tbody>
 			</table>
 		</div>
@@ -82,28 +65,28 @@
 		        	    </div>
 		        	</div>
 		        </div>
-		    	<form method="POST">
-		    		<input id="idItem" type="hidden" value="<?php echo $id ?>">
+		    	<form id="formData" method="POST">
+		    		<input id="idTabla" type="hidden" value="<?php echo $id ?>">
 		    		<div class="row">
     				
 		    			<div class="input-field  col s7">
 		    				<i class="material-icons prefix">account_circle</i>
-		    				<input id="nombres" type="text" class="validate" name="nombres">
-		    				<span id="requerido" class="red-text darken hide">Ingresa aquí tu nombre</span>
+		    				<input id="nombres" type="text" class="validate" >
+		    				<span id="requerido" class="red-text darken hide">Debes ingresar tu nombre</span>
 		    				<label for="nombres">Nombre</label>
 		    			</div>
 
 		    			<div class="input-field  col s7">
 		    				<i class="material-icons prefix">account_circle</i>
-		    				<input id="apellidos" type="text" class="validate" name="apellidos">
-		    				<span id="requerido" class="red-text darken hide">Ingresa aquí tu apellido</span>
+		    				<input id="apellidos" type="text" class="validate" >
+		    				<span id="requerido" class="red-text darken hide">Debes ingresar tu apellido</span>
 		    				<label for="apellidos">Apellidos</label>
 		    			</div>
 
 		    			<div class="input-field  col s7">
 		    				<i class="material-icons prefix">email</i>
-		    				<input id="correo" type="email" class="validate" name="correo">
-		    				<span id="requerido" class="red-text darken hide">Ingresa aquí tu correo</span>
+		    				<input id="correo" type="email" class="validate" >
+		    				<span id="requerido" class="red-text darken hide">Debes ingresar tu correo</span>
 		    				<label for="correo">Correo</label>
 		    			</div>
 		    		</div>

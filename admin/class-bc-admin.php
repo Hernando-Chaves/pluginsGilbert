@@ -57,9 +57,18 @@ class BC_Admin
      *
      * @since    1.0.0
      * @access   private
-     * @var      object    $build_menupage  instancia de BC_Build_Menupage
+     * @var      object    $db global $wpdb
      */
     private $db;
+
+     /**
+     * Objeto BC_CRUD_JSON
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      object    $crud_json  instancia de BC_CRUD_JSON
+     */
+    private $crud_json;
     
     /**
      * @param string $plugin_name nombre o identificador único de éste plugin.
@@ -73,6 +82,7 @@ class BC_Admin
         $this->build_menupage = new BC_Build_Menupage();
         global $wpdb;
         $this->db             = $wpdb;
+        $this->crud_json      = new BC_CRUD_JSON();
         
     }
     
@@ -245,6 +255,54 @@ class BC_Admin
                     'insert_id' => $this->db->insert_id,
                 ]);
 
+            }
+            echo $json;
+            wp_die();
+
+
+        }
+    }
+
+
+    public function ajax_crud_json()
+    {
+        check_ajax_referer('bcdata_seg','nonce');
+
+        if(current_user_can('manage_options'))
+        {
+            extract($_POST,EXTR_OVERWRITE);/*CONVIERTE TODOS LOS VALORES DE LA SUPERGLOBAL $_POST EN VARIABLES*/
+
+            $sql       = $this->db->prepare("SELECT data FROM " . BC_TABLE . " WHERE id =  %d ", $idTabla );
+            $resultado = $this->db->get_var( $sql );
+
+            if($tipo == 'add')
+            {
+
+                $data = $this->crud_json->addItem( $resultado, $nombres, $apellidos, $correo, $media);
+               
+                $columns = [
+                    'data' => json_encode($data)
+                ];
+
+                $where = [
+                    "id" => $idTabla,
+                ];
+
+                $format = [
+                    "%s"
+                ];
+                $where_format = [
+                    "%d"
+                ];  
+
+                $result_update = $this->db->update(BC_TABLE, $columns,$where,$format, $where_format);
+                $last_item  = end($data['items']);
+                $insert_id  = $last_item['id'];
+
+                $json = json_encode([
+                    'result'    => $result_update,
+                    'insert_id' => $insert_id,
+                ]);
             }
             echo $json;
             wp_die();

@@ -3,6 +3,14 @@ input.clase_campo
     padding: 8px 17px;
 }
 
+/*PANTALLA DE EDICION*/
+.bc-media 
+{
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+}
+
 .alert-minimalist 
 {
 	background-color: rgb(241, 242, 240);
@@ -61,6 +69,11 @@ input.clase_campo
 	left: 50%;
 	width: 60px;
 	transform: translate(-50%,-50%);
+}
+
+.modal 
+{
+	max-height: 90%!important;
 }
 
 

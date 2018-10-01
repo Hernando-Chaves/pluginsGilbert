@@ -1,0 +1,21 @@
+{
+	"tabla" : {
+		"nombre"    : "test"
+	},
+	"items"    : [
+		{
+			"id"        : 1,
+			"nombres"   : "Hernando",
+			"apellidos" : "Chaves",
+			"correo"    : "chaza@hotmail.com",
+			"media"     : "url"
+		},
+		{
+			"id"        : 2,
+			"nombres"   : "Jorge",
+			"apellidos" : "Gomes",
+			"correo"    : "jorge@hotmail.com",
+			"media"     : "url"
+		}
+	]
+}
