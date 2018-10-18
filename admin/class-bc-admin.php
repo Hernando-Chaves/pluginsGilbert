@@ -303,6 +303,56 @@ class BC_Admin
                     'result'    => $result_update,
                     'insert_id' => $insert_id,
                 ]);
+
+            } else if($tipo == 'update'){
+
+                $data = $this->crud_json->updateItem( $resultado, $idUser, $nombres, $apellidos, $correo, $media);
+                
+                $columns = [
+                    'data' => json_encode($data)
+                ];
+
+                $where = [
+                    "id" => $idTabla,
+                ];
+
+                $format = [
+                    "%s"
+                ];
+                $where_format = [
+                    "%d"
+                ];  
+
+                $result_update = $this->db->update(BC_TABLE, $columns,$where,$format, $where_format);
+
+                $json = json_encode([
+                    'result'    => $result_update
+                ]);
+
+            } else if($tipo == 'delete') {
+
+                $data = $this->crud_json->deleteItem($resultado, $idUser);
+                
+                $columns = [
+                    'data' => json_encode($data)
+                ];
+
+                $where = [
+                    "id" => $idTabla,
+                ];
+
+                $format = [
+                    "%s"
+                ];
+                $where_format = [
+                    "%d"
+                ];  
+
+                $result_update = $this->db->update(BC_TABLE, $columns,$where,$format, $where_format);
+
+                $json = json_encode([
+                    'result'    => $result_update
+                ]);
             }
             echo $json;
             wp_die();

@@ -2,6 +2,22 @@ input.clase_campo
 {
     padding: 8px 17px;
 }
+/*ANIMACION AL EDITAR*/
+.bganimado
+{
+	animation: bganimation 1.4s;
+	-webkit-animation: bganimation 1.4s;
+}
+@keyframes bganimation
+{
+	  0% {background: #0DA46D;}                  
+	100% {background: transparent;}
+}
+@-webkit-@keyframes bganimation
+{
+	  0% {background: #0DA46D;}
+	100% {background: transparent;}
+}
 
 /*PANTALLA DE EDICION*/
 .bc-media 

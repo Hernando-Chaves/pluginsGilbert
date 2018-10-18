@@ -178,8 +178,7 @@ class BC_Master
 	 * @access   private
 	 */
     private function definir_admin_hooks() 
-    {
-        
+    {        
         $this->cargador->add_action( 'admin_menu', $this->bc_admin, 'bc_add_menu' );
         $this->cargador->add_action( 'admin_enqueue_scripts', $this->bc_admin, 'enqueue_styles' );
         $this->cargador->add_action( 'admin_enqueue_scripts', $this->bc_admin, 'enqueue_scripts' );
@@ -201,6 +200,7 @@ class BC_Master
         
         $this->cargador->add_action( 'wp_enqueue_scripts', $this->bc_public, 'enqueue_styles' );
         $this->cargador->add_action( 'wp_enqueue_scripts', $this->bc_public, 'enqueue_scripts' );
+        $this->cargador->add_shortcode( 'bcdatos', $this->bc_public, 'BCAddShortcode' );
                 
     }
     

@@ -16,7 +16,7 @@
 			<a href="?page=bc_data" class="btn-floating blue waves-effect waves-light " style="margin-bottom: 7px; ">
 				<i class="material-icons">arrow_back</i>
 			</a><br>
-			<button class="btn-floating pulse add-item waves-effect waves-light" style="margin-bottom: 7px; ">
+			<button id="btnAgregarUser" class="btn-floating pulse add-item waves-effect waves-light" style="margin-bottom: 7px; ">
 				<i class="material-icons">add</i>
 			</button>
 			<span style="font-size: 1.5rem;">Agregar Usuario</span>
@@ -67,6 +67,7 @@
 		        </div>
 		    	<form id="formData" method="POST">
 		    		<input id="idTabla" type="hidden" value="<?php echo $id ?>">
+		    		<h5></h5>
 		    		<div class="row">
     				
 		    			<div class="input-field  col s7">
@@ -117,6 +118,11 @@
 		      <button id="agregar" class="waves-effect waves-light btn" ">
 				<i class="material-icons left">add</i>
 		      	Crear Usuario
+		  	  </button>
+
+		  	  <button data-id="" id="actualizar" class="waves-effect waves-light btn" ">
+				<i class="material-icons left">cached</i>
+		      	Actualizar
 		  	  </button>
 		    </div>
 		  </div>

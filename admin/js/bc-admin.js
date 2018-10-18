@@ -1,12 +1,17 @@
 (function( $ ) {
 	'use strict';
 
-	var precargador = $('.bc_preloader'),
-	        urlEdit = '?page=bc_data&action=edit&id=',
-           marcoImg = $('.marcoImg img'),
-       selectImgVal = $('#selectImgVal'),
-            idTabla = $('#idTabla').val(),
-              marco;
+     var precargador = $('.bc_preloader'),
+     urlEdit         = '?page=bc_data&action=edit&id=',
+     marcoImg        = $('.marcoImg img'),
+     selectImgVal    = $('#selectImgVal'),
+     idTabla         = $('#idTabla').val(),
+     nombres         = $('#nombres'),
+     correo          = $('#correo'),
+     apellidos       = $('#apellidos'),
+     tituloModal     = $('#formData h5'),
+     marco;
+
 
     // HELPERS
     function limpiarEnlace( url )
@@ -48,7 +53,7 @@
                         $(this).siblings('#requerido').removeClass('hide');
                     }
 
-                    result = true;
+                    // result = true;
 
                 } else {
 
@@ -96,11 +101,6 @@
         $('table tbody').append(output);
 
     }
-
-
-
-
-    
 
     // VENTANA MODAL
     $('.modal').modal();
@@ -195,11 +195,19 @@
 
     // MODAL EDITAR
     $('.add-item').on('click',function(){
-     
+
+        $('#formData label').removeClass('active');
+        $('#formData input').val('');
+        $('.marcoImg img').attr('src','');
+        tituloModal.text('Agregar Usuario');
+        $('#actualizar').css('display','none');
+        $('#agregar').css('display','initial');
         $('#addUpdate').modal('open');
+
     });
 
     $('#selectImg').on('click',function(e){
+
         e.preventDefault();
 
         if(marco)
@@ -237,12 +245,11 @@
 
     // AGREGA USUARIO 
     $('#agregar').on('click',function(){
-        var n             = $('#nombres'),
-            c             = $('#correo'),
-            a             = $('#apellidos'),
-            val_correo    = c.val(),
-            val_nombres   = n.val(),
-            val_apellidos = a.val(),
+
+        var
+            val_correo    = correo.val(),
+            val_nombres   = nombres.val(),
+            val_apellidos = apellidos.val(),
             img_val       = selectImgVal.val();
 
             if(validarCamposVacios('#formData input'))
@@ -252,10 +259,10 @@
             {
                 $('#formData input').removeClass('invalid');
                 $('#formData input').addClass('valid');
-                if(!c.hasClass('invalid'))
+                if(!correo.hasClass('invalid'))
                 {
-                    c.addClass('invalid');
-                    c.siblings('#requerido').removeClass('hide').text('Debes ingresar un correo valido');
+                    correo.addClass('invalid');
+                    correo.siblings('#requerido').removeClass('hide').text('Debes ingresar un correo valido');
                 }
                 
             } else {
@@ -317,6 +324,216 @@
             }
 
     });
-    	
+    
+    // BOTON EDITAR
+    $(document).on('click','[data-edit]', function(){
+
+       tituloModal.text('Editar Usuario');
+       $('#actualizar').css('display','initial');
+       $('#agregar').css('display','none');
+       $('#addUpdate').modal('open');
+
+       var 
+           $this      = $(this),
+           id         = $this.attr('data-edit'),
+           tr         = $this.parent().parent(),
+           tdImg      = tr.find($('td:nth-child(1) img')),
+           tdNombre   = tr.find($('td:nth-child(2')),
+           tdApellido = tr.find($('td:nth-child(3)')),
+           tdCorreo   = tr.find($('td:nth-child(4)')),
+           src        = tdImg.attr('src');
+
+       $('#formData label').addClass('active');
+
+       selectImgVal.val(src);
+       marcoImg.attr('src', src);
+       nombres.val(tdNombre.text());
+       apellidos.val(tdApellido.text());
+       correo.val(tdCorreo.text());
+       $('#actualizar').attr('data-id',id);
+
+    });
+
+    $(document).on('click','#actualizar',function(){
+
+        var 
+            $this         = $(this),
+            id            = $this.attr('data-id'),
+            tr            = $('tr[data-user="'+id+'"]'),
+            tdImg         = tr.find($('td:nth-child(1) img')),
+            tdNombre      = tr.find($('td:nth-child(2')),
+            tdApellido    = tr.find($('td:nth-child(3)')),
+            tdCorreo      = tr.find($('td:nth-child(4)')),
+            val_correo    = correo.val(),
+            val_nombres   = nombres.val(),
+            val_apellidos = apellidos.val(),
+            img_val       = selectImgVal.val();
+
+
+        if(validarCamposVacios('#formData input'))
+        {
+            console.log('hay que validar');
+        } else if(!validarCorreo(val_correo))
+        {
+            $('#formData input').removeClass('invalid');
+            $('#formData input').addClass('valid');
+            if(!correo.hasClass('invalid'))
+            {
+                correo.addClass('invalid');
+                correo.siblings('#requerido').removeClass('hide').text('Debes ingresar un correo valido');
+            }
+            
+        } else {
+            $('#formData input').removeClass('invalid');
+            $('#formData input').addClass('valid');
+            precargador.css('display','flex');
+
+            $.ajax({
+                url     : bcdata.url,
+                type    : 'POST',
+                dataType: 'json',
+                data    : {
+                    action    : 'bc_crud_json',
+                    nonce     : bcdata.seguridad,
+                    tipo      : 'update',
+                    idTabla   : idTabla,
+                    idUser    : id,
+                    nombres   : val_nombres,
+                    apellidos : val_apellidos,
+                    correo    : val_correo,
+                    media     : img_val
+                },success:function(data){
+                    console.log(data);
+                    if(data.result)
+                    {                       
+                       precargador.css('display','none');
+                       swal({
+                            title  : 'Actualizado',
+                            text   : 'El usuario ' + val_nombres + ' ha sido actualizado correctamnete',
+                            type   : 'success',
+                            timer  : 1500
+                       });
+
+                       location.reload();
+                       setTimeout(function(){
+                          $('#addUpdate').modal('close');
+                          tdImg.attr('src',img_val);
+                          tdNombre.text(val_nombres);
+                          tdApellido.text(val_apellidos);
+                          tdCorreo.text(val_correo);
+                       },1800);
+                        tr.addClass('bganimado');
+
+                       setTimeout(function(){
+                        tr.removeClass('bganimado');
+                       },1300);
+
+                    } else {
+                        
+                       precargador.css('display','none');
+
+                       swal({
+                            title  : 'Error',
+                            text   : 'Hubo un error al actualizar',
+                            type   : 'error',
+                            timer  : 2000
+                       });
+
+                    }
+                },error: function(d,x,v){
+                    console.log(d);
+                    console.log(x);
+                    console.log(v);
+                }
+            });
+        }
+
+
+    });
+    // METODO ELIMINAR
+    $(document).on('click','[data-remove]',function(){
+        var 
+            $this    = $(this),
+            id       = $this.attr('data-remove'),
+            // tr       = $('tr[data-user ="'+id+'"]'),
+            tr       = $this.parent().parent(),
+            tdNombre = tr.find($('td:nth-child(2')).text();
+
+            swal({
+                title               : 'Estas seguro de querer eliminar a "'+tdNombre+'" ?',
+                text                : 'Esta acción no se puede deshacer',
+                type                : 'warning',
+                showCancelButton    : true,
+                confirmButtonColor  : '#dd6b55',
+                confirmButtonText   : 'Si, borrarlo',
+                closeOnConfirm      : false,
+                showLoaderOnConfirm : true,
+                html                : true
+            },function(isConfirm){
+                if(isConfirm)
+                {
+
+                    $.ajax({
+                        url     : bcdata.url,
+                        type    : 'POST',
+                        dataType: 'json',
+                        data    : {
+                            action    : 'bc_crud_json',
+                            nonce     : bcdata.seguridad,
+                            tipo      : 'delete',
+                            idTabla   : idTabla,
+                            idUser    : id
+                        },success:function(data){
+                            console.log(data);
+                            if(data.result)
+                            {                       
+                               precargador.css('display','none');
+
+                               setTimeout(function(){
+
+                                   swal({
+                                       title  : 'Borrado',
+                                       text   : 'El usuario'+ tdNombre +' ha sido eliminado',
+                                       type   : 'success',
+                                       timer  : 1500
+                                   }); 
+
+                                   tr.css({
+                                     "background" : "red",
+                                     "color"      : "white"
+                                   }).fadeOut(600);
+
+                                   setTimeout(function(){
+                                     tr.remove();
+                                   },1000);
+
+                               },1500);
+                               
+                            } else {
+                                
+                               precargador.css('display','none');
+
+                               swal({
+                                    title  : 'Error',
+                                    text   : 'Hubo un error al eliminar',
+                                    type   : 'error',
+                                    timer  : 2000
+                               });
+
+                            }
+                        },error: function(d,x,v){
+                            console.log(d);
+                            console.log(x);
+                            console.log(v);
+                        }
+                    });
+
+                    
+                } else {
+
+                }
+            });
+            
+    });
 
 })( jQuery );

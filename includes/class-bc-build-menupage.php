@@ -48,7 +48,7 @@ class BC_Build_Menupage
     public function __construct() 
     {
         
-        $this->menus = [];
+        $this->menus    = [];
         $this->submenus = [];
         
     }

@@ -53,7 +53,7 @@ $result = $this->db->get_results( $sql );
 						?>
 						<tr bc-table-id="<?php echo $id ?>">
 							<td><?php echo $nombre ?></td>
-							<td>[Shortcode id=<?php echo $id ?>]</td>
+							<td>[bcdatos id=<?php echo $id ?>]</td>
 							<td>
 								<button data-bc-edit-id="<?php echo $id ?>" class="btn-floating waves-ligh btn">
 									<i class="material-icons">edit</i>

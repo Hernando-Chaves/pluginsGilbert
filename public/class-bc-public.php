@@ -41,15 +41,27 @@ class BC_Public {
 	 * @var      string    $version  La versión actual del plugin
 	 */
     private $version;
+
+     /**
+     * Objeto wpdb
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      object    $db global $wpdb
+     */
+    private $db;
     
     /**
      * @param string $plugin_name nombre o identificador único de éste plugin.
      * @param string $version La versión actual del plugin.
      */
-    public function __construct( $plugin_name, $version ) {
+    public function __construct( $plugin_name, $version ) 
+    {
         
+        global $wpdb;
+        $this->db           = $wpdb;
         $this->plugin_name  = $plugin_name;
-        $this->version      = $version;     
+        $this->version      = $version;  
         
     }
     
@@ -59,7 +71,8 @@ class BC_Public {
 	 * @since    1.0.0
      * @access   public
 	 */
-    public function enqueue_styles() {
+    public function enqueue_styles() 
+    {
         
         /**
          * Una instancia de esta clase debe pasar a la función run()
@@ -80,7 +93,8 @@ class BC_Public {
 	 * @since    1.0.0
      * @access   public
 	 */
-    public function enqueue_scripts() {
+    public function enqueue_scripts() 
+    {
         
         /**
          * Una instancia de esta clase debe pasar a la función run()
@@ -94,8 +108,85 @@ class BC_Public {
         wp_enqueue_script( $this->plugin_name, BC_PLUGIN_DIR_URL . 'public/js/bc-public.js', array( 'jquery' ), $this->version, true );
         
     }
+
+    public function BCAddShortcode($atts,$content ='')
+    {
+        $args = shortcode_atts([
+            'id' => ''
+        ], $atts);
+
+        extract($args, EXTR_OVERWRITE);
+
+        if($id != '')
+        {
+            $sql       = $this->db->prepare("SELECT nombre, data FROM " . BC_TABLE . " WHERE id =  %d ", $id );
+            $resultado = $this->db->get_results( $sql );
+
+            if( $resultado[0]->data != '')
+            {
+                $data   = json_decode( $resultado[0]->data, true);
+                $nombre = $resultado[0]->nombre;
+                $output = "
+                    <div id='bc-users'>
+                        <div class='bc-container'>
+                            <h5>$nombre</h5>
+
+                            <table class='table'>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nombres</th>
+                                        <th>Apellidos</th>
+                                        <th>Correos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                ";
+
+                foreach($data['items'] as $v)
+                {
+                    $nombres   = $v['nombres'];
+                    $apellidos = $v['apellidos'];
+                    $correos   = $v['correo'];
+                    $media     = $v['media'];
+
+                    $output .= "
+                        <tr>
+                            <td>
+                                <img class='bc-media' src='$media' alt=''>
+                            </td>
+                            <td>$nombres</td>
+                            <td>$apellidos</td>
+                            <td>$correos</td>
+                        </tr>
+                                    
+                    ";
+                }
+
+                $output .= "
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ";
+
+            } else 
+            {
+                $output = "<h5>[No hay información con el ID #$id]</h5>";
+            }
+
+            return $output;
+        }
+
+    }
     
 }
+
+
+
+
+
 
 
 

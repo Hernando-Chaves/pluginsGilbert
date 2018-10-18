@@ -103,14 +103,46 @@ class BC_CRUD_JSON
 		return $output;
 	}
 
-	public function updateItem()
+	public function updateItem($arUser, $idUser, $nombres, $apellidos, $correo, $media)
 	{
-		
+		$arUser = json_decode( $arUser, true );
+
+		foreach($arUser['items'] as $k => $v)
+		{
+			$id = $v['id'];
+
+			if($idUser == $id)
+			{
+				$arUser['items'][$k]['nombres']   = $nombres;
+				$arUser['items'][$k]['apellidos'] = $apellidos;
+				$arUser['items'][$k]['correo']    = $correo;
+				$arUser['items'][$k]['media']     = $media;
+
+				break;
+			}
+		}
+
+		return $arUser;
+
 	}
 
-	public function deleteItem()
+	public function deleteItem($arUser, $idUser)
 	{
-		
+		$arUser = json_decode( $arUser, true );
+
+		foreach($arUser['items'] as $k => $v)
+		{
+			$id = $v['id'];
+
+			if($idUser == $id)
+			{
+				unset($arUser['items'][$k]);
+
+				break;
+			}
+		}
+
+		return $arUser;
 	}
 
 }
